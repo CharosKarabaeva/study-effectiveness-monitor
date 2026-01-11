@@ -109,9 +109,25 @@
     <div class="card mb-5 shadow-sm">
         <div class="card-body">
             <h4 class="mb-3">📉 Динамика продуктивности</h4>
-            <img src="{% static chart_url %}" class="img-fluid rounded" alt="График продуктивности">
+            <img src="{% static 'productivity_chart.png' %}"
+                 class="img-fluid rounded"
+                 alt="График продуктивности">
         </div>
     </div>
+
+    <!-- Рекомендации -->
+    <h4 class="mb-3">🧠 Рекомендации системы</h4>
+
+    {% for rec in recommendations %}
+        <div class="alert
+            {% if rec.type == 'success' %}alert-success{% endif %}
+            {% if rec.type == 'warning' %}alert-warning{% endif %}
+            {% if rec.type == 'danger' %}alert-danger{% endif %}
+            {% if rec.type == 'info' %}alert-info{% endif %}
+            shadow-sm">
+            <strong>{{ rec.icon }}</strong> {{ rec.text }}
+        </div>
+    {% endfor %}
 
     <!-- Таблица -->
     <div class="card shadow-sm">
