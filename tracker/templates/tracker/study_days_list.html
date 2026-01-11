@@ -3,7 +3,6 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Учебная эффективность</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -82,7 +81,7 @@
         .section-title {
             font-family: "Arial Black", Arial, sans-serif;
             color: #2F4156;
-            margin-bottom: 16px;
+            margin-bottom: 48px;
         }
 
         .stat-line {
@@ -92,15 +91,37 @@
             border-bottom: 1px solid #eee;
             font-size: 14px;
         }
+
+        .dashboard-header {
+            text-align: center;
+            padding: 20px 20px 28px;
+            margin-bottom: 24px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 40px;
+            margin-bottom: 6px;
+        }
+
+        .dashboard-header .subtitle {
+            font-size: 15px;
+            margin: 0;
+        }
+
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+<div class="container pt-3">
+    <div class="dashboard-header">
+        <h1>Учебная эффективность</h1>
+        <p class="subtitle">
+            Анализ учебной активности, психоэмоционального состояния и продуктивности
+        </p>
+    </div>
+</div>
 
-<div class="container py-5">
-
-    <h1 class="text-center mb-5">📊 Учебная эффективность</h1>
-
+<div class="container py-3">
     <!-- Форма -->
     <div class="row mb-5">
     <div class="col-md-6">
@@ -210,18 +231,18 @@
     </div>
 
     <!-- Рекомендации -->
-    <h4 class="mb-3 section-title">Рекомендации системы</h4>
+    <div class="mb-5">
+        <h4 class="mb-3 section-title">Рекомендации системы</h4>
 
-    {% for rec in recommendations %}
-    <div class="recommendation-box">
-        <div class="recommendation-icon">
-            ●
+        {% for rec in recommendations %}
+        <div class="recommendation-box">
+            <div class="recommendation-icon">●</div>
+            <div class="recommendation-text">
+                {{ rec.text }}
+            </div>
         </div>
-        <div class="recommendation-text">
-            {{ rec.text }}
-        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 
     <!-- Таблица -->
     <div class="card shadow-sm">
@@ -353,13 +374,25 @@ fetch("{% url 'analytics_data' %}?" + params.toString())
                 scales: {
                     x: {
                         ticks: { color: '#2F4156' },
-                        grid: { color: 'rgba(47, 65, 86, 0.08)' }
+                        grid: { color: 'rgba(47, 65, 86, 0.08)' },
+                        title: {
+                            display: true,
+                            text: 'Дата',
+                            color: '#2F4156',
+                            font: { weight: 'bold' }
+                        }
                     },
                     y: {
                         min: 0,
                         max: 5,
                         ticks: { stepSize: 1, color: '#2F4156' },
-                        grid: { color: 'rgba(47, 65, 86, 0.08)' }
+                        grid: { color: 'rgba(47, 65, 86, 0.08)' },
+                        title: {
+                            display: true,
+                            text: 'Уровень продуктивности',
+                            color: '#2F4156',
+                            font: { weight: 'bold' }
+                        }
                     }
                 }
             }
@@ -410,11 +443,25 @@ fetch("{% url 'analytics_data' %}?" + params.toString())
                     }
                 },
                 scales: {
-                    x: { ticks: { color: '#2F4156' } },
+                    x: {
+                        ticks: { color: '#2F4156' },
+                        title: {
+                            display: true,
+                            text: 'Дата',
+                            color: '#2F4156',
+                            font: { weight: 'bold' }
+                        }
+                    },
                     y: {
                         min: 0,
                         max: 5,
-                        ticks: { stepSize: 1, color: '#2F4156' }
+                        ticks: { stepSize: 1, color: '#2F4156' },
+                        title: {
+                            display: true,
+                            text: 'Уровень (0–5)',
+                            color: '#2F4156',
+                            font: { weight: 'bold' }
+                        }
                     }
                 }
             }
