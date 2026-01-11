@@ -66,7 +66,7 @@
         margin-bottom: 12px;
         display: flex;
         gap: 12px;
-        align-items: flex-start;
+        align-items: center;
         }
 
         .recommendation-icon {
@@ -273,8 +273,13 @@
 
                     {% for item in mood_stats %}
                         <div class="stat-line">
-                            <span>Настроение {{ item.mood }}</span>
-                            <span>{{ item.avg_productivity|floatformat:2 }}</span>
+                            <span>
+                                При настроении <strong>{{ item.mood }}</strong>
+                            </span>
+                            <span>
+                                продуктивность —
+                                <strong>{{ item.avg_productivity|floatformat:2 }}</strong> / 5
+                            </span>
                         </div>
                     {% endfor %}
                 </div>
@@ -288,8 +293,13 @@
 
                     {% for item in fatigue_stats %}
                         <div class="stat-line">
-                            <span>Усталость {{ item.fatigue }}</span>
-                            <span>{{ item.avg_productivity|floatformat:2 }}</span>
+                            <span>
+                                При усталости <strong>{{ item.fatigue }}</strong>
+                            </span>
+                            <span>
+                                продуктивность —
+                                <strong>{{ item.avg_productivity|floatformat:2 }}</strong> / 5
+                            </span>
                         </div>
                     {% endfor %}
                 </div>
@@ -298,12 +308,20 @@
     </div>
 </div>
 <script>
-fetch("{% url 'analytics_data' %}")
+const params = new URLSearchParams(window.location.search);
+
+fetch("{% url 'analytics_data' %}?" + params.toString())
     .then(response => response.json())
     .then(data => {
+
+        // ---------- ГРАФИК ПРОДУКТИВНОСТИ ----------
         const ctx = document.getElementById('productivityChart').getContext('2d');
 
-        new Chart(ctx, {
+        if (window.productivityChartInstance) {
+            window.productivityChartInstance.destroy();
+        }
+
+        window.productivityChartInstance = new Chart(ctx, {
             type: 'line',
             data: {
                 labels: data.dates,
@@ -315,7 +333,6 @@ fetch("{% url 'analytics_data' %}")
                     borderWidth: 4,
                     tension: 0.45,
                     fill: true,
-
                     pointRadius: 7,
                     pointHoverRadius: 9,
                     pointBackgroundColor: '#6F90B7',
@@ -327,41 +344,35 @@ fetch("{% url 'analytics_data' %}")
                 responsive: true,
                 plugins: {
                     legend: {
-                        display: true,
                         labels: {
                             color: '#2F4156',
-                            font: {
-                                size: 14,
-                                weight: 'bold'
-                            }
+                            font: { size: 14, weight: 'bold' }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: {
-                            color: '#2F4156'
-                        },
-                        grid: {
-                            color: 'rgba(47, 65, 86, 0.08)'
-                        }
+                        ticks: { color: '#2F4156' },
+                        grid: { color: 'rgba(47, 65, 86, 0.08)' }
                     },
                     y: {
                         min: 0,
                         max: 5,
-                        ticks: {
-                            stepSize: 1,
-                            color: '#2F4156'
-                        },
-                        grid: {
-                            color: 'rgba(47, 65, 86, 0.08)'
-                        }
+                        ticks: { stepSize: 1, color: '#2F4156' },
+                        grid: { color: 'rgba(47, 65, 86, 0.08)' }
                     }
                 }
             }
         });
+
+        // ---------- ГРАФИК НАСТРОЕНИЯ И УСТАЛОСТИ ----------
         const ctx2 = document.getElementById('moodFatigueChart').getContext('2d');
-        new Chart(ctx2, {
+
+        if (window.moodFatigueChartInstance) {
+            window.moodFatigueChartInstance.destroy();
+        }
+
+        window.moodFatigueChartInstance = new Chart(ctx2, {
             type: 'line',
             data: {
                 labels: data.dates,
@@ -370,7 +381,7 @@ fetch("{% url 'analytics_data' %}")
                         label: 'Настроение',
                         data: data.mood,
                         borderColor: '#7FB77E',
-                        backgroundColor: 'rgba(127, 183, 126, 0.2)',
+                        backgroundColor: 'rgba(127, 183, 126, 0.25)',
                         borderWidth: 3,
                         tension: 0.4,
                         fill: true,
@@ -380,7 +391,7 @@ fetch("{% url 'analytics_data' %}")
                         label: 'Усталость',
                         data: data.fatigue,
                         borderColor: '#E36464',
-                        backgroundColor: 'rgba(227, 100, 100, 0.2)',
+                        backgroundColor: 'rgba(227, 100, 100, 0.25)',
                         borderWidth: 3,
                         tension: 0.4,
                         fill: true,
@@ -399,16 +410,11 @@ fetch("{% url 'analytics_data' %}")
                     }
                 },
                 scales: {
+                    x: { ticks: { color: '#2F4156' } },
                     y: {
                         min: 0,
                         max: 5,
-                        ticks: {
-                            stepSize: 1,
-                            color: '#2F4156'
-                        }
-                    },
-                    x: {
-                        ticks: { color: '#2F4156' }
+                        ticks: { stepSize: 1, color: '#2F4156' }
                     }
                 }
             }
