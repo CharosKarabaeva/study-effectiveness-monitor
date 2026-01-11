@@ -58,7 +58,7 @@
             border-radius: 8px !important;
         }
     </style>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
@@ -109,9 +109,9 @@
     <div class="card mb-5 shadow-sm">
         <div class="card-body">
             <h4 class="mb-3">📉 Динамика продуктивности</h4>
-            <img src="{% static 'productivity_chart.png' %}"
-                 class="img-fluid rounded"
-                 alt="График продуктивности">
+            <canvas id="productivityChart"
+                class="img-fluid rounded"
+                height="120"></canvas>
         </div>
     </div>
 
@@ -141,6 +141,7 @@
                     <th>Настроение</th>
                     <th>Усталость</th>
                     <th>Продуктивность</th>
+                    <th>Эффективность</th>
                     <th>Комментарий</th>
                 </tr>
                 </thead>
@@ -151,6 +152,15 @@
                         <td>{{ day.mood }}</td>
                         <td>{{ day.fatigue }}</td>
                         <td>{{ day.productivity }}</td>
+                        <td>
+                            {% if day.effectiveness_level == 'high' %}
+                                <span class="badge bg-success">Высокая</span>
+                            {% elif day.effectiveness_level == 'medium' %}
+                                <span class="badge bg-warning text-dark">Средняя</span>
+                            {% else %}
+                                <span class="badge bg-danger">Низкая</span>
+                            {% endif %}
+                        </td>
                         <td>{{ day.comment }}</td>
                     </tr>
                 {% endfor %}
@@ -181,5 +191,70 @@
         {% endfor %}
     </ul>
 </div>
+<script>
+fetch("{% url 'analytics_data' %}")
+    .then(response => response.json())
+    .then(data => {
+        const ctx = document.getElementById('productivityChart').getContext('2d');
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.dates,
+                datasets: [{
+                    label: 'Продуктивность',
+                    data: data.productivity,
+                    borderColor: '#6F90B7',
+                    backgroundColor: '#DEEFFC',
+                    borderWidth: 4,
+                    tension: 0.45,
+                    fill: true,
+
+                    pointRadius: 7,
+                    pointHoverRadius: 9,
+                    pointBackgroundColor: '#6F90B7',
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        labels: {
+                            color: '#2F4156',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: '#2F4156'
+                        },
+                        grid: {
+                            color: 'rgba(47, 65, 86, 0.08)'
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#2F4156'
+                        },
+                        grid: {
+                            color: 'rgba(47, 65, 86, 0.08)'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 </body>
 </html>
