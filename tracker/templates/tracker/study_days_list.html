@@ -105,6 +105,41 @@
         </div>
     </div>
 
+    <!-- Фильтр по датам -->
+    <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-3">📆 Фильтр по датам</h4>
+
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label">С даты</label>
+                    <input
+                        type="date"
+                        name="date_from"
+                        class="form-control"
+                        value="{{ request.GET.date_from }}"
+                    >
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">По дату</label>
+                    <input
+                        type="date"
+                        name="date_to"
+                        class="form-control"
+                        value="{{ request.GET.date_to }}"
+                    >
+                </div>
+
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-main w-100">
+                        Применить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- График -->
     <div class="card mb-5 shadow-sm">
         <div class="card-body">
