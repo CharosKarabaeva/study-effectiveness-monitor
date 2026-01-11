@@ -57,6 +57,41 @@
         input, textarea, select {
             border-radius: 8px !important;
         }
+
+        .recommendation-box {
+        background-color: #DEEFFC;
+        border: 1.5px solid #6F90B7;
+        border-radius: 12px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        }
+
+        .recommendation-icon {
+            font-size: 20px;
+            color: #6F90B7;
+        }
+
+        .recommendation-text {
+            color: #2F4156;
+            font-size: 15px
+        }
+
+        .section-title {
+            font-family: "Arial Black", Arial, sans-serif;
+            color: #2F4156;
+            margin-bottom: 16px;
+        }
+
+        .stat-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -67,40 +102,32 @@
     <h1 class="text-center mb-5">📊 Учебная эффективность</h1>
 
     <!-- Форма -->
-    <div class="card mb-5 shadow-sm">
-        <div class="card-body">
-            <h4 class="mb-3">➕ Добавить день учёбы</h4>
-
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-main mt-2">
-                    Сохранить
-                </button>
-            </form>
+    <div class="row mb-5">
+    <div class="col-md-6">
+        <div class="card shadow-sm h-100">
+            <div class="card-body">
+                <h4 class="mb-3 section-title">Добавить день учёбы</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-main w-100 mt-2">
+                        Сохранить
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- Средние показатели -->
-    <div class="row mb-5">
-        <div class="col-md-4 mb-3">
-            <div class="accent-box">
-                <h5>📈 Продуктивность</h5>
-                <div class="fs-4 fw-bold">{{ averages.avg_productivity|floatformat:2 }}</div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="accent-box">
-                <h5>🙂 Настроение</h5>
-                <div class="fs-4 fw-bold">{{ averages.avg_mood|floatformat:2 }}</div>
-            </div>
-        </div>
-
-        <div class="col-md-4 mb-3">
-            <div class="accent-box">
-                <h5>😴 Усталость</h5>
-                <div class="fs-4 fw-bold">{{ averages.avg_fatigue|floatformat:2 }}</div>
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 info-card">
+                <div class="card-body">
+                    <h5 class="mb-3">Как заполнять данные</h5>
+                    <ul class="tips-list">
+                        <li>Оцени день честно, а не «идеально»</li>
+                        <li>Усталость ≠ плохой день</li>
+                        <li>Комментарий помогает анализу</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -140,6 +167,30 @@
         </div>
     </div>
 
+    <!-- Средние показатели -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-3">
+            <div class="accent-box">
+                <h5>📈 Продуктивность</h5>
+                <div class="fs-4 fw-bold">{{ averages.avg_productivity|floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="accent-box">
+                <h5>🙂 Настроение</h5>
+                <div class="fs-4 fw-bold">{{ averages.avg_mood|floatformat:2 }}</div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="accent-box">
+                <h5>😴 Усталость</h5>
+                <div class="fs-4 fw-bold">{{ averages.avg_fatigue|floatformat:2 }}</div>
+            </div>
+        </div>
+    </div>
+
     <!-- График -->
     <div class="card mb-5 shadow-sm">
         <div class="card-body">
@@ -159,17 +210,17 @@
     </div>
 
     <!-- Рекомендации -->
-    <h4 class="mb-3">🧠 Рекомендации системы</h4>
+    <h4 class="mb-3 section-title">Рекомендации системы</h4>
 
     {% for rec in recommendations %}
-        <div class="alert
-            {% if rec.type == 'success' %}alert-success{% endif %}
-            {% if rec.type == 'warning' %}alert-warning{% endif %}
-            {% if rec.type == 'danger' %}alert-danger{% endif %}
-            {% if rec.type == 'info' %}alert-info{% endif %}
-            shadow-sm">
-            <strong>{{ rec.icon }}</strong> {{ rec.text }}
+    <div class="recommendation-box">
+        <div class="recommendation-icon">
+            ●
         </div>
+        <div class="recommendation-text">
+            {{ rec.text }}
+        </div>
+    </div>
     {% endfor %}
 
     <!-- Таблица -->
@@ -212,27 +263,39 @@
         </div>
     </div>
 
-    <hr>
+   <hr class="my-5">
 
-    <h4>Влияние настроения на продуктивность</h4>
-    <ul>
-        {% for item in mood_stats %}
-            <li>
-                Настроение {{ item.mood }} →
-                продуктивность {{ item.avg_productivity|floatformat:2 }}
-            </li>
-        {% endfor %}
-    </ul>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="section-title">Влияние настроения</h5>
 
-    <h4>Влияние усталости на продуктивность</h4>
-    <ul>
-        {% for item in fatigue_stats %}
-            <li>
-                Усталость {{ item.fatigue }} →
-                продуктивность {{ item.avg_productivity|floatformat:2 }}
-            </li>
-        {% endfor %}
-    </ul>
+                    {% for item in mood_stats %}
+                        <div class="stat-line">
+                            <span>Настроение {{ item.mood }}</span>
+                            <span>{{ item.avg_productivity|floatformat:2 }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="section-title">Влияние усталости</h5>
+
+                    {% for item in fatigue_stats %}
+                        <div class="stat-line">
+                            <span>Усталость {{ item.fatigue }}</span>
+                            <span>{{ item.avg_productivity|floatformat:2 }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
 fetch("{% url 'analytics_data' %}")
