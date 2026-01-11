@@ -115,6 +115,14 @@
         </div>
     </div>
 
+    <!-- График настроения и усталости -->
+    <div class="card mb-5 shadow-sm">
+        <div class="card-body">
+            <h4 class="mb-3">🙂😴 Настроение и усталость</h4>
+            <canvas id="moodFatigueChart" height="120"></canvas>
+        </div>
+    </div>
+
     <!-- Рекомендации -->
     <h4 class="mb-3">🧠 Рекомендации системы</h4>
 
@@ -250,6 +258,59 @@ fetch("{% url 'analytics_data' %}")
                         grid: {
                             color: 'rgba(47, 65, 86, 0.08)'
                         }
+                    }
+                }
+            }
+        });
+        const ctx2 = document.getElementById('moodFatigueChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels: data.dates,
+                datasets: [
+                    {
+                        label: 'Настроение',
+                        data: data.mood,
+                        borderColor: '#7FB77E',
+                        backgroundColor: 'rgba(127, 183, 126, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6
+                    },
+                    {
+                        label: 'Усталость',
+                        data: data.fatigue,
+                        borderColor: '#E36464',
+                        backgroundColor: 'rgba(227, 100, 100, 0.2)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#2F4156',
+                            font: { weight: 'bold' }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 5,
+                        ticks: {
+                            stepSize: 1,
+                            color: '#2F4156'
+                        }
+                    },
+                    x: {
+                        ticks: { color: '#2F4156' }
                     }
                 }
             }
