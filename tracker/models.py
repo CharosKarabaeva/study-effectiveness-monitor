@@ -44,3 +44,45 @@ class StudyDay(models.Model):
             return 'medium'
         return 'high'
 
+class Recommendation(models.Model):
+    study_day = models.ForeignKey(
+        StudyDay,
+        on_delete=models.CASCADE,
+        related_name='recommendations',
+        verbose_name='Учебный день'
+    )
+    text = models.TextField(
+        verbose_name='Текст рекомендации'
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
+
+    def __str__(self):
+        return f"Рекомендация для {self.study_day.date}"
+
+    class Meta:
+        verbose_name = 'Рекомендация'
+        verbose_name_plural = 'Рекомендации'
+
+class StudyMetric(models.Model):
+    date = models.DateField(
+        verbose_name='Дата'
+    )
+    avg_mood = models.FloatField(
+        verbose_name='Среднее настроение'
+    )
+    avg_fatigue = models.FloatField(
+        verbose_name='Средняя усталость'
+    )
+    avg_productivity = models.FloatField(
+        verbose_name='Средняя продуктивность'
+    )
+
+    def __str__(self):
+        return f"Метрики за {self.date}"
+
+    class Meta:
+        verbose_name = 'Метрика учебной активности'
+        verbose_name_plural = 'Метрики учебной активности'
