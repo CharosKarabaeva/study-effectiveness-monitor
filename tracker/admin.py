@@ -30,29 +30,20 @@ class StudyDayAdmin(admin.ModelAdmin):
 @admin.register(StudyMetric)
 class StudyMetricAdmin(admin.ModelAdmin):
     list_display = (
-        'study_day',
-        'metric_type',
-        'value',
+        'date',
+        'avg_mood',
+        'avg_fatigue',
+        'avg_productivity',
     )
 
-    list_filter = (
-        'metric_type',
-    )
-
-    search_fields = (
-        'study_day__comment',
-    )
+    ordering = ('-date',)
 
 
 @admin.register(Recommendation)
 class RecommendationAdmin(admin.ModelAdmin):
     list_display = (
-        'recommendation_type',
+        'study_day',
         'created_at',
-    )
-
-    list_filter = (
-        'recommendation_type',
     )
 
     search_fields = (
